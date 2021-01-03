@@ -19,13 +19,13 @@ namespace SAM.Core.Excel
 
             try
             {
-                application = new Application();
+                application = new Application(true);
                 application.DisplayAlerts = false;
 
                 Workbook workbook = application.Workbooks.Open(path);
                 Worksheet worksheet = workbook.Worksheet(worksheetName);
                 if (worksheet != null)
-                    result = worksheet.UsedRange?.Value as object[,];
+                    result = worksheet.Values();
             }
             catch(Exception exception)
             {
@@ -43,6 +43,14 @@ namespace SAM.Core.Excel
             return result;
         }
 
+        public static object[,] Values(this Worksheet worksheet)
+        {
+            if (worksheet == null)
+                return null;
+
+            return worksheet.UsedRange?.Value as object[,];
+        }
+
         public static Dictionary<string, object[,]> Values(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -56,7 +64,7 @@ namespace SAM.Core.Excel
 
             try
             {
-                application = new Application();
+                application = new Application(true);
                 application.DisplayAlerts = false;
 
                 Workbook workbook = application.Workbooks.Open(path);

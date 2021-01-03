@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Create\DelimitedFileTables.cs" />
+    <Compile Include="Create\DelimitedFileTable.cs" />
     <Compile Include="Modify\Release.cs" />
     <Compile Include="Modify\FinalRelease.cs" />
     <Compile Include="Query\WorksheetNames.cs" />
@@ -50,7 +55,6 @@
   <ItemGroup>
     <Folder Include="Classes\" />
     <Folder Include="Convert\" />
-    <Folder Include="Create\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="VBIDE">
