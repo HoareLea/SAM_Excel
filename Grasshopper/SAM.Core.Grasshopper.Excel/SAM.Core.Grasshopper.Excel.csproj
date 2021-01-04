@@ -60,6 +60,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\SAMExcelWrite.cs" />
     <Compile Include="Component\SAMExcelRead.cs" />
     <Compile Include="Kernel\AssemblyInfo.cs" />
     <Compile Include="Kernel\AssemblyPriority.cs" />
