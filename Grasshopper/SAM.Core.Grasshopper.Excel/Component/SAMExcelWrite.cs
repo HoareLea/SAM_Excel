@@ -80,9 +80,9 @@ namespace SAM.Core.Grasshopper.Excel
                 return;
             }
 
-            if (!System.IO.File.Exists(path))
+            if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(path)))
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "File does not exists");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Directory does not exists");
                 return;
             }
 
@@ -100,18 +100,14 @@ namespace SAM.Core.Grasshopper.Excel
                 return;
             }
 
-            object[,] values = null; //= Query.Objects<object>(structure);
-
-            if (values == null)
-                return;
-
-            int index = Params.IndexOfOutputParam("Values");
+            int index = Params.IndexOfOutputParam("Successful");
             if (index == -1)
                 return;
 
-            DataTree<object> dataTree = Query.DataTree(values);
+            object[,] values = Query.Objects(structure);
+            bool result = Core.Excel.Modify.Write(path, worksheetName, values);
 
-            dataAccess.SetDataTree(index, dataTree);
+            dataAccess.SetData(index, result);
         }
     }
 }
