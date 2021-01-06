@@ -57,10 +57,19 @@ namespace SAM.Core.Excel
             Application application = null;
             bool result = false;
 
+            bool screenUpdating = false;
+            bool displayStatusBar = false;
+            bool enableEvents = false;
+
             try
             {
                 application = new Application(true);
                 application.DisplayAlerts = false;
+                application.Visible = false;
+
+                screenUpdating = application.ScreenUpdating;
+                displayStatusBar = application.DisplayStatusBar;
+                enableEvents = application.EnableEvents;
 
                 Workbook workbook = null;
                 if(System.IO.File.Exists(path))
@@ -80,6 +89,10 @@ namespace SAM.Core.Excel
             {
                 if (application != null)
                 {
+                    application.ScreenUpdating = screenUpdating;
+                    application.DisplayStatusBar = displayStatusBar;
+                    application.EnableEvents = enableEvents;
+
                     application.Quit();
                     application.Dispose();
                 }
