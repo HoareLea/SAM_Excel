@@ -31,10 +31,16 @@ namespace SAM.Core.Excel
                 displayStatusBar = application.DisplayStatusBar;
                 enableEvents = application.EnableEvents;
 
-                Workbook workbook = application.Workbooks.Open(path);
-                Worksheet worksheet = workbook.Worksheet(worksheetName);
-                if (worksheet != null)
-                    result = worksheet.Values();
+                Workbook workbook = application.Workbooks.Open(path, true, true);
+                if(workbook != null)
+                {
+                    Worksheet worksheet = workbook.Worksheet(worksheetName);
+                    if (worksheet != null)
+                        result = worksheet.Values();
+
+                    workbook.Close(false);
+                }
+
             }
             catch(Exception exception)
             {
