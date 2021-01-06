@@ -80,6 +80,8 @@ namespace SAM.Core.Excel
                 result = Write(workbook, worksheetName, values);
                 if(result)
                     workbook.SaveAs(path);
+
+                workbook.Close(false);
             }
             catch (Exception exception)
             {
