@@ -46,6 +46,7 @@ namespace SAM.Core.Grasshopper.Excel
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_path", NickName = "_path", Description = "Path to Microsoft Excel File", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_worksheetName", NickName = "_worksheetName", Description = "Worksheet Name", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new Param_Boolean() { Name = "_run", NickName = "_run", Description = "Run", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 return result.ToArray();
             }
         }
@@ -72,6 +73,11 @@ namespace SAM.Core.Grasshopper.Excel
         /// </param>
         protected override void SolveInstance(IGH_DataAccess dataAccess)
         {
+            bool run = false;
+            if (!dataAccess.GetData(2, ref run) || !run)
+                return;
+
+
             string path = null;
             if (!dataAccess.GetData(0, ref path) || string.IsNullOrEmpty(path))
             {
