@@ -23,7 +23,7 @@ namespace SAM.Core.Excel
 
             try
             {
-                application = new Application(true);
+                application = new Application();
                 application.DisplayAlerts = false;
                 application.Visible = false;
 
