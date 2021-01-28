@@ -39,7 +39,7 @@ namespace SAM.Core.Excel
             List<string> result = new List<string>();
             try
             {
-                application = new Application(true);
+                application = new Application();
                 application.DisplayAlerts = false;
 
                 Workbook workbook = application.Workbooks.Open(path);
