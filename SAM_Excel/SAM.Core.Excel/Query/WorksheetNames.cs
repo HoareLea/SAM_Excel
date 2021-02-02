@@ -42,7 +42,7 @@ namespace SAM.Core.Excel
                 application = new Application();
                 application.DisplayAlerts = false;
 
-                Workbook workbook = application.Workbooks.Open(path);
+                Workbook workbook = application.Workbooks.Open(path, 2, true);
                 if (workbook != null)
                     result = WorksheetNames(workbook);
             }
