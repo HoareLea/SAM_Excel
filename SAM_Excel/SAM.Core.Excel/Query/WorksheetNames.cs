@@ -8,16 +8,20 @@ namespace SAM.Core.Excel
     {
         public static List<string> WorksheetNames(this Workbook workbook)
         {
-            if (workbook == null || workbook.Worksheets == null)
+            if (workbook == null)
+                return null;
+
+            Sheets sheets = workbook.Worksheets;
+            if (sheets == null)
                 return null;
 
             List<string> result = new List<string>();
 
-            int count = workbook.Worksheets.Count;
+            int count = sheets.Count;
 
             for (int i = 0; i < count; i++)
             {
-                Worksheet worksheet = workbook.Worksheets[i + 1] as Worksheet;
+                Worksheet worksheet = sheets[i + 1] as Worksheet;
                 result.Add(worksheet?.Name);
             }
 
@@ -44,7 +48,11 @@ namespace SAM.Core.Excel
 
                 Workbook workbook = application.Workbooks.Open(path, 2, true);
                 if (workbook != null)
+                {
                     result = WorksheetNames(workbook);
+                    workbook.Close(false);
+                }
+                    
             }
             catch (Exception exception)
             {
