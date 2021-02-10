@@ -90,7 +90,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             bool run = false;
             index = Params.IndexOfInputParam("_run_");
-            if (index != -1 || !dataAccess.GetData(index, ref run) || !run)
+            if (index == -1 || !dataAccess.GetData(index, ref run) || !run)
                 return;
 
 
@@ -133,7 +133,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             DelimitedFileTable delimitedFileTable = new DelimitedFileTable(values, names_Index, headerCount);
 
-            index = Params.IndexOfOutputParam("Values");
+            index = Params.IndexOfOutputParam("DelimitedFileTable");
             if (index != -1)
                 dataAccess.SetData(index, new GooDelimitedFileTable(delimitedFileTable));
         }
