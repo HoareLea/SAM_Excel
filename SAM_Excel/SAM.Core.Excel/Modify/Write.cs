@@ -96,6 +96,10 @@ namespace SAM.Core.Excel
                 displayStatusBar = application.DisplayStatusBar;
                 enableEvents = application.EnableEvents;
 
+                application.ScreenUpdating = false;
+                application.DisplayStatusBar = false;
+                application.EnableEvents = false;
+
                 Workbook workbook = null;
                 if (System.IO.File.Exists(path))
                     workbook = application.Workbooks.Open(path);

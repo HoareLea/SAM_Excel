@@ -92,12 +92,12 @@ namespace SAM.Core.Grasshopper.Excel
             
             bool run = false;
             index = Params.IndexOfInputParam("_run_");
-            if (index == -1 || !dataAccess.GetData(3, ref run) || !run)
+            if (index == -1 || !dataAccess.GetData(index, ref run) || !run)
                 return;
 
             string path = null;
             index = Params.IndexOfInputParam("_path");
-            if (index == -1 || !dataAccess.GetData(0, ref path) || string.IsNullOrEmpty(path))
+            if (index == -1 || !dataAccess.GetData(index, ref path) || string.IsNullOrEmpty(path))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -111,7 +111,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             string worksheetName = null;
             index = Params.IndexOfInputParam("_worksheetName");
-            if (index == -1 || !dataAccess.GetData(1, ref worksheetName) || string.IsNullOrEmpty(worksheetName))
+            if (index == -1 || !dataAccess.GetData(index, ref worksheetName) || string.IsNullOrEmpty(worksheetName))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -119,7 +119,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             global::Grasshopper.Kernel.Data.GH_Structure<global::Grasshopper.Kernel.Types.IGH_Goo> structure;
             index = Params.IndexOfInputParam("_values");
-            if (index == -1 || !dataAccess.GetDataTree(2, out structure))
+            if (index == -1 || !dataAccess.GetDataTree(index, out structure))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;

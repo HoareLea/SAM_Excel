@@ -82,7 +82,7 @@ namespace SAM.Core.Grasshopper.Excel
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
 
-                result.Add(new GH_SAMParam(new Param_Boolean() { Name = "Succeded", NickName = "Succeded", Description = "Succeded", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new Param_Boolean() { Name = "Succeed", NickName = "Succeed", Description = "Succeded", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 return result.ToArray();
             }
         }
@@ -149,7 +149,9 @@ namespace SAM.Core.Grasshopper.Excel
 
             bool result = Core.Excel.Modify.TryRunMacro(path, save, macroName, parameters.ToArray());
 
-            dataAccess.SetData(index, result);
+            index = Params.IndexOfOutputParam("");
+            if (index != -1)
+                dataAccess.SetData(index, result);
         }
     }
 }

@@ -17,13 +17,25 @@ namespace SAM.Core.Excel
                 return false;
 
             Application application = null;
+
+            bool screenUpdating = false;
+            bool displayStatusBar = false;
+            bool enableEvents = false;
+
             bool result = false;
             try
             {
                 application = new Application();
                 application.DisplayAlerts = false;
                 application.Visible = false;
+
+                screenUpdating = application.ScreenUpdating;
+                displayStatusBar = application.DisplayStatusBar;
+                enableEvents = application.EnableEvents;
+
                 application.ScreenUpdating = false;
+                application.DisplayStatusBar = false;
+                application.EnableEvents = false;
 
                 Workbook workbook = application.Workbooks.Open(path);
                 if (workbook != null)
@@ -33,7 +45,7 @@ namespace SAM.Core.Excel
                     if (save)
                         workbook.Save();
 
-                    workbook.Close();
+                    workbook.Close(false);
                 }
             }
             catch (Exception exception)
@@ -44,7 +56,9 @@ namespace SAM.Core.Excel
             {
                 if (application != null)
                 {
-                    application.ScreenUpdating = true;
+                    application.ScreenUpdating = screenUpdating;
+                    application.DisplayStatusBar = displayStatusBar;
+                    application.EnableEvents = enableEvents;
 
                     application.Quit();
                     application.Dispose();
