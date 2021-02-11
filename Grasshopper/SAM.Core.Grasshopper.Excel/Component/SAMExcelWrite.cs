@@ -17,7 +17,7 @@ namespace SAM.Core.Grasshopper.Excel
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -47,6 +47,16 @@ namespace SAM.Core.Grasshopper.Excel
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_path", NickName = "_path", Description = "Path to Microsoft Excel File", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_worksheetName", NickName = "_worksheetName", Description = "Worksheet Name", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new Param_GenericObject() { Name = "_values", NickName = "_values", Description = "Values", Access = GH_ParamAccess.tree }, ParamVisibility.Binding));
+
+                Param_Integer integer = null;
+
+                integer = new Param_Integer() { Name = "_rowIndex_", NickName = "_rowIndex_", Description = "Start Row Index", Access = GH_ParamAccess.item };
+                integer.SetPersistentData(1);
+                result.Add(new GH_SAMParam(integer, ParamVisibility.Binding));
+
+                integer = new Param_Integer() { Name = "_columnIndex_", NickName = "_columnIndex_", Description = "Start Column Index", Access = GH_ParamAccess.item };
+                integer.SetPersistentData(1);
+                result.Add(new GH_SAMParam(integer, ParamVisibility.Binding));
 
                 Param_Boolean param_Boolean = new Param_Boolean() { Name = "_run_", NickName = "_run_", Description = "Run", Access = GH_ParamAccess.item };
                 param_Boolean.SetPersistentData(false);
@@ -78,12 +88,16 @@ namespace SAM.Core.Grasshopper.Excel
         /// </param>
         protected override void SolveInstance(IGH_DataAccess dataAccess)
         {
+            int index = -1;
+            
             bool run = false;
-            if (!dataAccess.GetData(3, ref run) || !run)
+            index = Params.IndexOfInputParam("_run_");
+            if (index == -1 || !dataAccess.GetData(3, ref run) || !run)
                 return;
 
             string path = null;
-            if (!dataAccess.GetData(0, ref path) || string.IsNullOrEmpty(path))
+            index = Params.IndexOfInputParam("_path");
+            if (index == -1 || !dataAccess.GetData(0, ref path) || string.IsNullOrEmpty(path))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -96,27 +110,37 @@ namespace SAM.Core.Grasshopper.Excel
             }
 
             string worksheetName = null;
-            if (!dataAccess.GetData(1, ref worksheetName) || string.IsNullOrEmpty(worksheetName))
+            index = Params.IndexOfInputParam("_worksheetName");
+            if (index == -1 || !dataAccess.GetData(1, ref worksheetName) || string.IsNullOrEmpty(worksheetName))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
             global::Grasshopper.Kernel.Data.GH_Structure<global::Grasshopper.Kernel.Types.IGH_Goo> structure;
-            if (!dataAccess.GetDataTree(2, out structure))
+            index = Params.IndexOfInputParam("_values");
+            if (index == -1 || !dataAccess.GetDataTree(2, out structure))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            int index = Params.IndexOfOutputParam("Successful");
-            if (index == -1)
-                return;
+            int rowIndex = 1;
+            index = Params.IndexOfInputParam("_rowIndex_");
+            if (index != -1)
+                dataAccess.GetData(index, ref rowIndex);
+
+            int columnIndex = 1;
+            index = Params.IndexOfInputParam("_columnIndex_");
+            if (index != -1)
+                dataAccess.GetData(index, ref columnIndex);
 
             object[,] values = Query.Objects(structure);
-            bool result = Core.Excel.Modify.Write(path, worksheetName, values);
+            bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
 
-            dataAccess.SetData(index, result);
+            index = Params.IndexOfOutputParam("Successful");
+            if (index != -1)
+                dataAccess.SetData(index, result);
         }
     }
 }
