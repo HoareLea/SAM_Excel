@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Component\SAMExcelDelimitedFileTable.cs" />
+    <Compile Include="Component\SAMExcelRunMacro.cs" />
     <Compile Include="Component\SAMExcelWrite.cs" />
     <Compile Include="Component\SAMExcelRead.cs" />
     <Compile Include="Kernel\AssemblyInfo.cs" />
