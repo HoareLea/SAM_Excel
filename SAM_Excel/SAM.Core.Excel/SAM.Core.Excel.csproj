@@ -47,6 +47,7 @@
     <Compile Include="Create\DelimitedFileTables.cs" />
     <Compile Include="Create\DelimitedFileTable.cs" />
     <Compile Include="Modify\TryRunMacro.cs" />
+    <Compile Include="Modify\Update.cs" />
     <Compile Include="Modify\Write.cs" />
     <Compile Include="Modify\Release.cs" />
     <Compile Include="Modify\FinalRelease.cs" />
