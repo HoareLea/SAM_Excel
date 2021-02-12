@@ -148,7 +148,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             bool result = Core.Excel.Modify.TryRunMacro(path, save, macroName, parameters.ToArray());
 
-            index = Params.IndexOfOutputParam("");
+            index = Params.IndexOfOutputParam("Succeed");
             if (index != -1)
                 dataAccess.SetData(index, result);
         }
