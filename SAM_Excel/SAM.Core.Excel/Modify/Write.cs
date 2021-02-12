@@ -18,19 +18,11 @@ namespace SAM.Core.Excel
                 return true;
             }
 
-            int lowerBound_1 = values.GetLowerBound(0);
-            if (lowerBound_1 == 0)
-                lowerBound_1 += 1;
+            int rowCount = values.GetUpperBound(0) - values.GetLowerBound(0);
+            int columnCount = values.GetUpperBound(1) - values.GetLowerBound(1);
 
-            int lowerBound_2 = values.GetLowerBound(1);
-            if (lowerBound_2 == 0)
-                lowerBound_2 += 1;
-
-            int rowMax = Math.Max(lowerBound_1, rowIndex);
-            int columnMax = Math.Max(lowerBound_2, columnIndex);
-
-            Range range_1 = worksheet.Cells[rowMax, columnMax];
-            Range range_2 = worksheet.Cells[values.GetUpperBound(0) + rowMax, values.GetUpperBound(1) + columnMax];
+            Range range_1 = worksheet.Cells[rowIndex, columnIndex];
+            Range range_2 = worksheet.Cells[rowIndex + rowCount, columnIndex + columnCount];
 
             Range range = worksheet.Range(range_1, range_2);
 
