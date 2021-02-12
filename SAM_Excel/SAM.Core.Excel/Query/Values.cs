@@ -113,5 +113,34 @@ namespace SAM.Core.Excel
 
             return result;
         }
+
+        public static object[,] Values(object[,] values)
+        {
+            if (values == null)
+                return null;
+
+            object[,] result = (object[,])values.Clone();
+
+            for (int i = result.GetLowerBound(0); i < result.GetUpperBound(0); i++)
+                for (int j = result.GetLowerBound(1); j < result.GetUpperBound(1); j++)
+                {
+                    if (result[i, j] == null)
+                        continue;
+
+                    if (result[i, j].GetType().IsClass)
+                    {
+                        result[i, j] = result[i, j].ToString();
+                        continue;
+                    }
+
+                    if (result[i, j] is Guid)
+                    {
+                        result[i, j] = result[i, j].ToString();
+                        continue;
+                    }
+                }
+
+            return result;
+        }
     }
 }

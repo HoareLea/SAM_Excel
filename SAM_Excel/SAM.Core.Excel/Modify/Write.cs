@@ -26,7 +26,7 @@ namespace SAM.Core.Excel
 
             Range range = worksheet.Range(range_1, range_2);
 
-            range.Value = values;
+            range.Value = Query.Values(values);
             return true;
         }
 
