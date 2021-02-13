@@ -152,7 +152,7 @@ namespace SAM.Core.Grasshopper.Excel
             bool result = Core.Excel.Modify.TryRunMacro(path, save, macroName, parameters.ToArray());
 
             //Wait 2 sek
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(1000);
 
             index = Params.IndexOfOutputParam("Succeed");
             if (index != -1)

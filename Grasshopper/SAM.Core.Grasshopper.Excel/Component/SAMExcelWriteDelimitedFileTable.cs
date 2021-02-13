@@ -147,7 +147,7 @@ namespace SAM.Core.Grasshopper.Excel
             bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
 
             //Wait 2 sek
-            System.Threading.Thread.Sleep(2000);
+            System.Threading.Thread.Sleep(1000);
             index = Params.IndexOfOutputParam("Successful");
             if (index != -1)
                 dataAccess.SetData(index, result);
