@@ -98,7 +98,10 @@ namespace SAM.Core.Grasshopper.Excel
             bool run = false;
             index = Params.IndexOfInputParam("_run_");
             if (index == -1 || !dataAccess.GetData(index, ref run) || !run)
+            {
+                dataAccess.SetData(0, false);
                 return;
+            }
 
             string path = null;
             index = Params.IndexOfInputParam("_path");
@@ -143,6 +146,8 @@ namespace SAM.Core.Grasshopper.Excel
             object[,] values = Query.Objects(structure);
             bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
 
+            //Wait 2 sek
+            System.Threading.Thread.Sleep(2000);
             index = Params.IndexOfOutputParam("Successful");
             if (index != -1)
                 dataAccess.SetData(index, result);

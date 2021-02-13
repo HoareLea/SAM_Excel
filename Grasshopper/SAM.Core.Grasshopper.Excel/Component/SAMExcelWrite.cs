@@ -88,11 +88,15 @@ namespace SAM.Core.Grasshopper.Excel
         protected override void SolveInstance(IGH_DataAccess dataAccess)
         {
             int index = -1;
-            
+
             bool run = false;
             index = Params.IndexOfInputParam("_run_");
             if (index == -1 || !dataAccess.GetData(index, ref run) || !run)
+            {
+                dataAccess.SetData(0, false);
                 return;
+            }
+
 
             string path = null;
             index = Params.IndexOfInputParam("_path");
@@ -136,6 +140,7 @@ namespace SAM.Core.Grasshopper.Excel
 
             object[,] values = Query.Objects(structure);
             bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
+
 
             index = Params.IndexOfOutputParam("Successful");
             if (index != -1)
