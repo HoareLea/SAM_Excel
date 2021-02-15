@@ -5,7 +5,7 @@ namespace SAM.Core.Excel
 {
     public static partial class Modify
     {
-        public static bool Update(this Worksheet worksheet, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, bool clear = false)
+        public static bool Update(this Worksheet worksheet, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, ClearOption clearOption = ClearOption.None)
         {
             if (worksheet == null)
                 return false;
@@ -18,12 +18,16 @@ namespace SAM.Core.Excel
             int lastRowIndex = worksheet.Cells.SpecialCells(NetOffice.ExcelApi.Enums.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
             int lastColumnIndex = worksheet.Cells.SpecialCells(NetOffice.ExcelApi.Enums.XlCellType.xlCellTypeLastCell, Type.Missing).Column;
 
-            if (clear)
+            if (clearOption == ClearOption.Data)
             {
                 range_1 = worksheet.Cells[dataRowIndex, 1];
                 range_2 = worksheet.Cells[lastRowIndex, lastColumnIndex];
 
                 worksheet.Range(range_1, range_2).Clear();
+            }
+            else if(clearOption == ClearOption.All)
+            {
+                worksheet.UsedRange.Clear();
             }
 
             range_1 = worksheet.Cells[headerIndex, 1];
@@ -43,16 +47,24 @@ namespace SAM.Core.Excel
 
                 object[,] values_Column = delimitedFileTable.GetColumnValues(index).Transpose();
 
-                range_1 = worksheet.Cells[headerIndex, i];
-                range_2 = worksheet.Cells[headerIndex + delimitedFileTable.RowCount, i];
+                range_1 = worksheet.Cells[dataRowIndex, i];
+                range_2 = worksheet.Cells[dataRowIndex + delimitedFileTable.RowCount - 1, i];
 
                 worksheet.Range(range_1, range_2).Value = values_Column;
+
+                if(clearOption == ClearOption.Column)
+                {
+                    range_1 = worksheet.Cells[dataRowIndex + delimitedFileTable.RowCount, i];
+                    range_2 = worksheet.Cells[lastRowIndex, i];
+
+                    worksheet.Range(range_1, range_2).Clear();
+                }
             }
 
             return true;
         }
 
-        public static bool Update(this Workbook workbook, string worksheetName, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, bool clear = false)
+        public static bool Update(this Workbook workbook, string worksheetName, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, ClearOption clearOption = ClearOption.None)
         {
             if (workbook == null || string.IsNullOrWhiteSpace(worksheetName) || delimitedFileTable == null)
                 return false;
@@ -65,10 +77,10 @@ namespace SAM.Core.Excel
                     worksheet.Name = worksheetName;
             }
 
-            return Update(worksheet, delimitedFileTable, headerIndex, headerCount, clear);
+            return Update(worksheet, delimitedFileTable, headerIndex, headerCount, clearOption);
         }
 
-        public static bool Update(string path, string worksheetName, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, bool clear = false)
+        public static bool Update(string path, string worksheetName, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, ClearOption clearOption = ClearOption.None)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(worksheetName) || delimitedFileTable == null)
                 return false;
@@ -101,7 +113,7 @@ namespace SAM.Core.Excel
                 else
                     workbook = application.Workbooks.Add();
 
-                result = Update(workbook, worksheetName, delimitedFileTable, headerIndex, headerCount, clear);
+                result = Update(workbook, worksheetName, delimitedFileTable, headerIndex, headerCount, clearOption);
 
                 if (result)
                     workbook.SaveAs(path);

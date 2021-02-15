@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Component\SAMExcelDelimitedFileTable.cs" />
     <Compile Include="Component\SAMExcelRunMacro.cs" />
+    <Compile Include="Component\SAMExcelClearOption.cs" />
     <Compile Include="Component\SAMExcelWriteDelimitedFileTable.cs" />
     <Compile Include="Component\SAMExcelWrite.cs" />
     <Compile Include="Component\SAMExcelRead.cs" />

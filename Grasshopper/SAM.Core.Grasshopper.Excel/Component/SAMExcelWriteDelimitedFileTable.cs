@@ -59,9 +59,9 @@ namespace SAM.Core.Grasshopper.Excel
                 param_Integer.SetPersistentData(0);
                 result.Add(new GH_SAMParam(param_Integer, ParamVisibility.Binding));
 
-                param_Boolean = new Param_Boolean() { Name = "_clear_", NickName = "_clear_", Description = "Clear before data insert", Access = GH_ParamAccess.item };
-                param_Boolean.SetPersistentData(false);
-                result.Add(new GH_SAMParam(param_Boolean, ParamVisibility.Binding));
+                GooParameterParam parameterParam = new GooParameterParam() { Name = "_clearOption_", NickName = "_clearOption_", Description = "Clear Option", Access = GH_ParamAccess.item };
+                param_Boolean.SetPersistentData(Core.Excel.ClearOption.Data);
+                result.Add(new GH_SAMParam(parameterParam, ParamVisibility.Binding));
 
                 param_Boolean = new Param_Boolean() { Name = "_run_", NickName = "_run_", Description = "Run", Access = GH_ParamAccess.item };
                 param_Boolean.SetPersistentData(false);
@@ -143,12 +143,12 @@ namespace SAM.Core.Grasshopper.Excel
             if (index != -1)
                 dataAccess.GetData(index, ref headerCount);
 
-            bool clear = false;
-            index = Params.IndexOfInputParam("_clear_");
+            Core.Excel.ClearOption clearOption = Core.Excel.ClearOption.Data;
+            index = Params.IndexOfInputParam("_clearOption_");
             if (index != -1)
-                dataAccess.GetData(index, ref clear);
+                dataAccess.GetData(index, ref clearOption);
 
-            bool result = Core.Excel.Modify.Update(path, worksheetName, delimitedFileTable, headerIndex, headerCount, clear);
+            bool result = Core.Excel.Modify.Update(path, worksheetName, delimitedFileTable, headerIndex, headerCount, clearOption);
 
             //Wait 2 sek
             System.Threading.Thread.Sleep(1000);
