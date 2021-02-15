@@ -125,26 +125,30 @@ namespace SAM.Core.Grasshopper.Excel
                 return;
             }
 
-            global::Grasshopper.Kernel.Data.GH_Structure<global::Grasshopper.Kernel.Types.IGH_Goo> structure;
-            index = Params.IndexOfInputParam("_values");
-            if (index == -1 || !dataAccess.GetDataTree(index, out structure))
+            DelimitedFileTable delimitedFileTable = null;
+            index = Params.IndexOfInputParam("_delimitedFileTable");
+            if (index == -1 || !dataAccess.GetData(index, ref delimitedFileTable))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            int rowIndex = 1;
-            index = Params.IndexOfInputParam("_rowIndex_");
+            int headerIndex = 1;
+            index = Params.IndexOfInputParam("_headerIndex_");
             if (index != -1)
-                dataAccess.GetData(index, ref rowIndex);
+                dataAccess.GetData(index, ref headerIndex);
 
-            int columnIndex = 1;
-            index = Params.IndexOfInputParam("_columnIndex_");
+            int headerCount = 1;
+            index = Params.IndexOfInputParam("_headerCount_");
             if (index != -1)
-                dataAccess.GetData(index, ref columnIndex);
+                dataAccess.GetData(index, ref headerCount);
 
-            object[,] values = Query.Objects(structure);
-            bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
+            bool clear = false;
+            index = Params.IndexOfInputParam("_clear_");
+            if (index != -1)
+                dataAccess.GetData(index, ref clear);
+
+            bool result = Core.Excel.Modify.Update(path, worksheetName, delimitedFileTable, headerIndex, headerCount, clear);
 
             //Wait 2 sek
             System.Threading.Thread.Sleep(1000);
