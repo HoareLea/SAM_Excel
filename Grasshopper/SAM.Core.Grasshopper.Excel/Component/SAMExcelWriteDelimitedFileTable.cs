@@ -17,7 +17,7 @@ namespace SAM.Core.Grasshopper.Excel
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -50,6 +50,7 @@ namespace SAM.Core.Grasshopper.Excel
 
                 Param_Integer param_Integer = null;
                 Param_Boolean param_Boolean = null;
+                Param_String param_String = null;
 
                 param_Integer = new Param_Integer() { Name = "_headerIndex_", NickName = "_headerIndex_", Description = "Header Index", Access = GH_ParamAccess.item};
                 param_Integer.SetPersistentData(1);
@@ -59,9 +60,9 @@ namespace SAM.Core.Grasshopper.Excel
                 param_Integer.SetPersistentData(0);
                 result.Add(new GH_SAMParam(param_Integer, ParamVisibility.Binding));
 
-                GooParameterParam parameterParam = new GooParameterParam() { Name = "_clearOption_", NickName = "_clearOption_", Description = "Clear Option", Access = GH_ParamAccess.item };
-                param_Boolean.SetPersistentData(Core.Excel.ClearOption.Data);
-                result.Add(new GH_SAMParam(parameterParam, ParamVisibility.Binding));
+                param_String = new Param_String() { Name = "_clearOption_", NickName = "_clearOption_", Description = "Clear Option", Access = GH_ParamAccess.item };
+                param_String.SetPersistentData(Core.Excel.ClearOption.Data.ToString());
+                result.Add(new GH_SAMParam(param_String, ParamVisibility.Binding));
 
                 param_Boolean = new Param_Boolean() { Name = "_run_", NickName = "_run_", Description = "Run", Access = GH_ParamAccess.item };
                 param_Boolean.SetPersistentData(false);
@@ -146,7 +147,11 @@ namespace SAM.Core.Grasshopper.Excel
             Core.Excel.ClearOption clearOption = Core.Excel.ClearOption.Data;
             index = Params.IndexOfInputParam("_clearOption_");
             if (index != -1)
-                dataAccess.GetData(index, ref clearOption);
+            {
+                string clearOptionString = null;
+                if (dataAccess.GetData(index, ref clearOptionString))
+                    Enum.TryParse(clearOptionString, out clearOption);
+            }
 
             bool result = Core.Excel.Modify.Update(path, worksheetName, delimitedFileTable, headerIndex, headerCount, clearOption);
 
