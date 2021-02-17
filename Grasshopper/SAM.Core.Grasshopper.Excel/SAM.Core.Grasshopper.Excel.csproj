@@ -60,7 +60,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component\SAMExcelDelimitedFileTable.cs" />
+    <Compile Include="Component\SAMExcelReadDelimitedFileTable.cs" />
     <Compile Include="Component\SAMExcelRunMacro.cs" />
     <Compile Include="Component\SAMExcelClearOption.cs" />
     <Compile Include="Component\SAMExcelWriteDelimitedFileTable.cs" />

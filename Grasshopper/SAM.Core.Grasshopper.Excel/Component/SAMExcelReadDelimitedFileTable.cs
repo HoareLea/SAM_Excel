@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SAM.Core.Grasshopper.Excel
 {
-    public class SAMExcelDelimitedFileTable : GH_SAMVariableOutputParameterComponent
+    public class SAMExcelReadDelimitedFileTable : GH_SAMVariableOutputParameterComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
@@ -28,8 +28,8 @@ namespace SAM.Core.Grasshopper.Excel
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.
         /// </summary>
-        public SAMExcelDelimitedFileTable()
-          : base("SAMExcel.DelimitedFileTable", "SAMExcel.DelimitedFileTable",
+        public SAMExcelReadDelimitedFileTable()
+          : base("SAMExcel.ReadDelimitedFileTable", "SAMExcel.ReadDelimitedFileTable",
               "Read Microsoft Excel File as DelimitedFileTable",
               "SAM", "Excel")
         {
