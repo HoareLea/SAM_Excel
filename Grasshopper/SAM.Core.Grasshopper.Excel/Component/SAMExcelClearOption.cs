@@ -21,7 +21,7 @@ namespace SAM.Core.Grasshopper.Excel
         protected override System.Drawing.Bitmap Icon => Resources.SAM_Small;
 
         /// <summary>
-        /// Panel Type
+        /// Clear Option Enum Component
         /// </summary>
         public SAMExcelClearOption()
           : base("SAMExcel.ClearOption", "SAMExcel.ClearOption",
