@@ -9,5 +9,4 @@
 
 ## Installing
 
-To install **SAM** from .exe just download and run [latest installer](https://github.com/HoareLea/SAM_Deploy/releases)
-SAM link to Microsoft Excel
+To install **SAM** from .exe just download and run [latest installer](https://github.com/HoareLea/SAM_Deploy/releases) otherwise rebuild using VS [SAM](https://github.com/HoareLea/SAM) and [SAM_Excel](https://github.com/HoareLea/SAM_Excel)
