@@ -24,7 +24,7 @@ namespace SAM.Core.Grasshopper.Excel
         /// </summary>
         protected override System.Drawing.Bitmap Icon => Resources.SAM_Excel;
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.quarternary;
 
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.

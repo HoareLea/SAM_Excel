@@ -1,5 +1,6 @@
 ﻿using SAM.Core.Grasshopper.Excel.Properties;
 using System;
+using Grasshopper.Kernel;
 
 namespace SAM.Core.Grasshopper.Excel
 {
@@ -19,6 +20,8 @@ namespace SAM.Core.Grasshopper.Excel
         /// Provides an Icon for the component.
         /// </summary>
         protected override System.Drawing.Bitmap Icon => Resources.SAM_Excel;
+
+        public override GH_Exposure Exposure => GH_Exposure.tertiary;
 
         /// <summary>
         /// Clear Option Enum Component
