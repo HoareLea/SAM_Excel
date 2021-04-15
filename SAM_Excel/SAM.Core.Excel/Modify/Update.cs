@@ -54,10 +54,14 @@ namespace SAM.Core.Excel
 
                 if(clearOption == ClearOption.Column)
                 {
-                    range_1 = worksheet.Cells[dataRowIndex + delimitedFileTable.RowCount, i];
-                    range_2 = worksheet.Cells[lastRowIndex, i];
+                    int firstRowIndex = dataRowIndex + delimitedFileTable.RowCount;
+                    if(firstRowIndex < lastColumnIndex)
+                    {
+                        range_1 = worksheet.Cells[firstRowIndex, i];
+                        range_2 = worksheet.Cells[lastRowIndex, i];
 
-                    worksheet.Range(range_1, range_2).Clear();
+                        worksheet.Range(range_1, range_2).Clear();
+                    }
                 }
             }
 
