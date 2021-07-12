@@ -1,5 +1,4 @@
-﻿using Grasshopper;
-using Grasshopper.Kernel;
+﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using SAM.Core.Grasshopper.Excel.Properties;
 using System;
