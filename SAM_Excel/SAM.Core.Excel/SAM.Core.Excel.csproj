@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToPdf.cs" />
     <Compile Include="Create\DelimitedFileTables.cs" />
     <Compile Include="Create\DelimitedFileTable.cs" />
     <Compile Include="Enums\ClearOption.cs" />
@@ -60,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes\" />
-    <Folder Include="Convert\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="VBIDE">
