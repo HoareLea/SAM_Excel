@@ -64,8 +64,9 @@
     <Compile Include="Component\SAMExcelReadDelimitedFileTable.cs" />
     <Compile Include="Component\SAMExcelRunMacro.cs" />
     <Compile Include="Component\SAMExcelClearOption.cs" />
-    <Compile Include="Component\SAMExcelWriteDelimitedFileTable.cs" />
-    <Compile Include="Component\SAMExcelWrite.cs" />
+    <Compile Include="Component\SAMExcelUpdateByDelimitedFileTable.cs" />
+    <Compile Include="Component\SAMExcelWriteByDelimitedFileTable.cs" />
+    <Compile Include="Component\SAMExcelWriteByValues.cs" />
     <Compile Include="Component\SAMExcelRead.cs" />
     <Compile Include="Kernel\AssemblyInfo.cs" />
     <Compile Include="Kernel\AssemblyPriority.cs" />

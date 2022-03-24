@@ -7,7 +7,7 @@ namespace SAM.Core.Excel
 {
     public static partial class Modify
     {
-        public static bool Write(this Worksheet worksheet, object[,] values, int rowIndex = 1, int columnIndex = 1)
+        public static bool Write(this Worksheet worksheet, object[,] values, int rowIndex = 1, int columnIndex = 1, ClearOption clearOption = ClearOption.None)
         {
             if (worksheet == null)
                 return false;
@@ -21,8 +21,27 @@ namespace SAM.Core.Excel
             int rowCount = values.GetUpperBound(0) - values.GetLowerBound(0);
             int columnCount = values.GetUpperBound(1) - values.GetLowerBound(1);
 
-            Range range_1 = worksheet.Cells[rowIndex, columnIndex];
-            Range range_2 = worksheet.Cells[rowIndex + rowCount, columnIndex + columnCount];
+            Range range_1 = null;
+            Range range_2 = null;
+
+            switch (clearOption)
+            {
+                case ClearOption.All:
+                    worksheet.UsedRange.Clear();
+                    break;
+
+                case ClearOption.Data:
+                    worksheet.UsedRange.ClearContents();
+                    break;
+
+                case ClearOption.Column:
+                    int lastRowIndex = worksheet.Cells.SpecialCells(NetOffice.ExcelApi.Enums.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
+                    worksheet.Range(worksheet.Cells[1, columnIndex], worksheet.Cells[lastRowIndex, columnIndex + columnCount]).Clear();
+                    break;
+            }
+
+            range_1 = worksheet.Cells[rowIndex, columnIndex];
+            range_2 = worksheet.Cells[rowIndex + rowCount, columnIndex + columnCount];
 
             Range range = worksheet.Range(range_1, range_2);
 
@@ -30,7 +49,7 @@ namespace SAM.Core.Excel
             return true;
         }
 
-        public static bool Write(this Workbook workbook, string worksheetName, object[,] values, int rowIndex = 1, int columnIndex = 1)
+        public static bool Write(this Workbook workbook, string worksheetName, object[,] values, int rowIndex = 1, int columnIndex = 1, ClearOption clearOption = ClearOption.None)
         {
             if (workbook == null || string.IsNullOrEmpty(worksheetName) || rowIndex < 1 || columnIndex < 1)
                 return false;
@@ -43,22 +62,32 @@ namespace SAM.Core.Excel
                     worksheet.Name = worksheetName;
             }
 
-            return Write(worksheet, values, rowIndex, columnIndex);
+            return Write(worksheet, values, rowIndex, columnIndex, clearOption);
         }
 
-        public static bool Write(string path, string worksheetName, object[,] values, int rowIndex = 1, int columnIndex = 1)
+        public static bool Write(string path, string worksheetName, object[,] values, int rowIndex = 1, int columnIndex = 1, ClearOption clearOption = ClearOption.None)
         {
             if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(worksheetName) || rowIndex < 1 || columnIndex < 1)
                 return false;
 
-            List<bool> result = Write(path, new string[] { worksheetName }, new List<object[,]> { values }, new int[] { rowIndex }, new int[] { columnIndex });
+            List<bool> result = Write(path, new string[] { worksheetName }, new List<object[,]> { values }, new int[] { rowIndex }, new int[] { columnIndex }, clearOption);
             if (result == null || result.Count == 0)
                 return false;
 
             return result[0];
         }
 
-        public static List<bool> Write(string path, IEnumerable<string> worksheetNames, IEnumerable<object[,]> values, IEnumerable<int> rowIndexes = null, IEnumerable<int> columnIndexes = null)
+        public static bool Write(string path, string worksheetName, DelimitedFileTable delimitedFileTable, int rowIndex = 1, int columnIndex = 1, ClearOption clearOption = ClearOption.None)
+        {
+            if(string.IsNullOrWhiteSpace(path) || delimitedFileTable == null || string.IsNullOrWhiteSpace(worksheetName))
+            {
+                return false;
+            }
+
+            return Write(path, worksheetName, delimitedFileTable.GetValues(), rowIndex, columnIndex, clearOption);
+        }
+
+        public static List<bool> Write(string path, IEnumerable<string> worksheetNames, IEnumerable<object[,]> values, IEnumerable<int> rowIndexes = null, IEnumerable<int> columnIndexes = null, ClearOption clearOption = ClearOption.None)
         {
             if (string.IsNullOrEmpty(path) || worksheetNames == null || values == null)
                 return null;
@@ -112,7 +141,7 @@ namespace SAM.Core.Excel
                     if (columnIndexes != null && i < columnIndexes.Count())
                         columnIndex = columnIndexes.ElementAt(0);
 
-                    bool succeded = Write(workbook, worksheetName, values.ElementAt(i), rowIndex, columnIndex);
+                    bool succeded = Write(workbook, worksheetName, values.ElementAt(i), rowIndex, columnIndex, clearOption);
                     result.Add(succeded);
                 }
 

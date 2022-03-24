@@ -6,17 +6,17 @@ using System.Collections.Generic;
 
 namespace SAM.Core.Grasshopper.Excel
 {
-    public class SAMExcelWrite : GH_SAMVariableOutputParameterComponent
+    public class SAMExcelWriteByDelimitedFileTable : GH_SAMVariableOutputParameterComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("c51ea883-e931-41c0-8e44-0be46627c51a");
+        public override Guid ComponentGuid => new Guid("67a801cd-f0ae-4098-b0a9-bf575b79ea75");
 
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.1";
+        public override string LatestComponentVersion => "1.0.0";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -28,10 +28,10 @@ namespace SAM.Core.Grasshopper.Excel
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.
         /// </summary>
-        public SAMExcelWrite()
-          : base("SAMExcel.Write", "SAMExcel.Write",
-              "Write Microsoft Excel File",
-              "SAM", "Excel")
+        public SAMExcelWriteByDelimitedFileTable()
+          : base("SAMExcel.WriteByDelimitedFileTable", "SAMExcel.WriteByDelimitedFileTable",
+              "Write Microsoft Excel File by DelimitedFileTable",
+              "SAM WIP", "Excel")
         {
         }
 
@@ -45,7 +45,7 @@ namespace SAM.Core.Grasshopper.Excel
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_path", NickName = "_path", Description = "Path to Microsoft Excel File", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new Param_String() { Name = "_worksheetName", NickName = "_worksheetName", Description = "Worksheet Name", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new Param_GenericObject() { Name = "_values", NickName = "_values", Description = "Values", Access = GH_ParamAccess.tree }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooDelimitedFileTableParam() { Name = "_delimitedFileTable", NickName = "_delimitedFileTable", Description = "DelimitedFileTable", Access = GH_ParamAccess.tree }, ParamVisibility.Binding));
 
                 Param_Integer integer = null;
 
@@ -56,6 +56,10 @@ namespace SAM.Core.Grasshopper.Excel
                 integer = new Param_Integer() { Name = "_columnIndex_", NickName = "_columnIndex_", Description = "Start Column Index", Access = GH_ParamAccess.item };
                 integer.SetPersistentData(1);
                 result.Add(new GH_SAMParam(integer, ParamVisibility.Binding));
+
+                Param_String param_String = new Param_String() { Name = "_clearOption_", NickName = "_clearOption_", Description = "Clear Option", Access = GH_ParamAccess.item };
+                param_String.SetPersistentData(Core.Excel.ClearOption.Data.ToString());
+                result.Add(new GH_SAMParam(param_String, ParamVisibility.Binding));
 
                 Param_Boolean param_Boolean = new Param_Boolean() { Name = "_run_", NickName = "_run_", Description = "Run", Access = GH_ParamAccess.item };
                 param_Boolean.SetPersistentData(false);
@@ -120,9 +124,9 @@ namespace SAM.Core.Grasshopper.Excel
                 return;
             }
 
-            global::Grasshopper.Kernel.Data.GH_Structure<global::Grasshopper.Kernel.Types.IGH_Goo> structure;
-            index = Params.IndexOfInputParam("_values");
-            if (index == -1 || !dataAccess.GetDataTree(index, out structure))
+            DelimitedFileTable delimitedFileTable = null;
+            index = Params.IndexOfInputParam("_delimitedFileTable");
+            if (index == -1 || !dataAccess.GetData(index, ref delimitedFileTable))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -138,13 +142,21 @@ namespace SAM.Core.Grasshopper.Excel
             if (index != -1)
                 dataAccess.GetData(index, ref columnIndex);
 
-            object[,] values = Query.Objects(structure);
-            bool result = Core.Excel.Modify.Write(path, worksheetName, values, rowIndex, columnIndex);
+            Core.Excel.ClearOption clearOption = Core.Excel.ClearOption.Data;
+            index = Params.IndexOfInputParam("_clearOption_");
+            if (index != -1)
+            {
+                string clearOptionString = null;
+                if (dataAccess.GetData(index, ref clearOptionString))
+                    Enum.TryParse(clearOptionString, out clearOption);
+            }
+
+            bool result = Core.Excel.Modify.Write(path, worksheetName, delimitedFileTable, rowIndex, columnIndex, clearOption);
 
             //Wait 2 sek
             System.Threading.Thread.Sleep(1000);
 
-            index = Params.IndexOfOutputParam("Successful");
+            index = Params.IndexOfOutputParam("successful");
             if (index != -1)
                 dataAccess.SetData(index, result);
         }
