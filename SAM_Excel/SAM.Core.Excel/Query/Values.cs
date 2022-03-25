@@ -121,8 +121,8 @@ namespace SAM.Core.Excel
 
             object[,] result = (object[,])values.Clone();
 
-            for (int i = result.GetLowerBound(0); i < result.GetUpperBound(0); i++)
-                for (int j = result.GetLowerBound(1); j < result.GetUpperBound(1); j++)
+            for (int i = result.GetLowerBound(0); i < result.GetUpperBound(0) + 1; i++)
+                for (int j = result.GetLowerBound(1); j < result.GetUpperBound(1) + 1; j++)
                 {
                     if (result[i, j] == null)
                         continue;
