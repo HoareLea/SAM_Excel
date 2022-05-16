@@ -89,9 +89,6 @@ namespace SAM.Core.Excel
 
         public static List<bool> Write(string path, IEnumerable<string> worksheetNames, IEnumerable<object[,]> values, IEnumerable<int> rowIndexes = null, IEnumerable<int> columnIndexes = null, ClearOption clearOption = ClearOption.None)
         {
-            if (string.IsNullOrEmpty(path) || worksheetNames == null || values == null)
-                return null;
-
             List<bool> result = new List<bool>();
 
             int count = values.Count();
@@ -100,6 +97,66 @@ namespace SAM.Core.Excel
 
             if (worksheetNames.Count() == 0)
                 return result;
+
+            Dictionary<string, Func<Worksheet, bool>> funcs = new Dictionary<string, Func<Worksheet, bool>>();
+
+            for(int i = 0; i < count; i++)
+            {
+                string worksheetName = null;
+                if (i < worksheetNames.Count())
+                    worksheetName = worksheetNames.ElementAt(0);
+
+                int rowIndex = 1;
+                if (rowIndexes != null && i < rowIndexes.Count())
+                    rowIndex = rowIndexes.ElementAt(0);
+
+                int columnIndex = 1;
+                if (columnIndexes != null && i < columnIndexes.Count())
+                    columnIndex = columnIndexes.ElementAt(0);
+
+                Func<Worksheet, bool> func = new Func<Worksheet, bool>((Worksheet worksheet) =>
+                {
+                    if (worksheet == null)
+                    {
+                        return false;
+                    }
+
+                    return Write(worksheet, values.ElementAt(i), rowIndex, columnIndex, clearOption);
+                });
+
+                funcs[worksheetName] = func;
+            }
+            
+
+            if(funcs == null || funcs.Count == 0)
+            {
+                return result;
+            }
+
+            return Write(path, funcs);
+        }
+
+        public static bool Write(string path, string worksheetName, Func<Worksheet, bool> func)
+        {
+            if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(worksheetName) || func == null)
+            {
+                return false;
+            }
+
+            Dictionary<string, Func<Worksheet, bool>> funcs = new Dictionary<string, Func<Worksheet, bool>>();
+            funcs[worksheetName] = func;
+
+            List<bool> results = Write(path, funcs);
+
+            return results != null && results.Count != 0 && results[0];
+        }
+
+        public static List<bool> Write(string path, Dictionary<string, Func<Worksheet, bool>> funcs)
+        {
+            if (string.IsNullOrEmpty(path) || funcs == null || funcs.Count == 0)
+                return null;
+
+            List<bool> result = new List<bool>();
 
             Application application = null;
 
@@ -127,26 +184,28 @@ namespace SAM.Core.Excel
                 else
                     workbook = application.Workbooks.Add();
 
-                string worksheetName = null;
-                for (int i = 0; i < count; i++)
+                foreach(KeyValuePair<string, Func<Worksheet, bool>> keyValuePair in funcs)
                 {
-                    if (i < worksheetNames.Count())
-                        worksheetName = worksheetNames.ElementAt(0);
+                    result.Add(false);
 
-                    int rowIndex = 1;
-                    if (rowIndexes != null && i < rowIndexes.Count())
-                        rowIndex = rowIndexes.ElementAt(0);
+                    if (string.IsNullOrEmpty(keyValuePair.Key) || keyValuePair.Value == null)
+                    {
+                        continue;
+                    }
 
-                    int columnIndex = 1;
-                    if (columnIndexes != null && i < columnIndexes.Count())
-                        columnIndex = columnIndexes.ElementAt(0);
+                    Worksheet worksheet = workbook.Worksheet(keyValuePair.Key);
+                    if (worksheet == null)
+                    {
+                        continue;
+                    }
 
-                    bool succeded = Write(workbook, worksheetName, values.ElementAt(i), rowIndex, columnIndex, clearOption);
-                    result.Add(succeded);
+                    result[result.Count - 1] = keyValuePair.Value.Invoke(worksheet);
                 }
 
-                if (result != null && result.Contains(true))
+                if(result.Contains(true))
+                {
                     workbook.SaveAs(path);
+                }
 
                 workbook.Close(false);
             }
