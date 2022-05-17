@@ -142,11 +142,10 @@ namespace SAM.Core.Grasshopper.Excel
             if (index != -1)
                 dataAccess.GetData(index, ref rowEnd);
 
-            int columnEnd = 1;
+            int columnEnd = int.MaxValue;
             index = Params.IndexOfInputParam("columnEnd_");
             if (index != -1)
                 dataAccess.GetData(index, ref columnEnd);
-
 
             bool result = Core.Excel.Modify.ClearContents(path, worksheetName, rowStart, columnStart, rowEnd, columnEnd);
 
