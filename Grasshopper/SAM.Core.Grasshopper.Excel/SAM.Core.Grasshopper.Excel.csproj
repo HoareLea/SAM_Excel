@@ -66,6 +66,7 @@
     <Compile Include="Component\SAMExcelClearOption.cs" />
     <Compile Include="Component\SAMExcelUpdateByDelimitedFileTable.cs" />
     <Compile Include="Component\SAMExcelWriteByDelimitedFileTable.cs" />
+    <Compile Include="Component\SAMExcelClearContents.cs" />
     <Compile Include="Component\SAMExcelWriteByValues.cs" />
     <Compile Include="Component\SAMExcelRead.cs" />
     <Compile Include="Kernel\AssemblyInfo.cs" />

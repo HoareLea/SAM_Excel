@@ -14,7 +14,7 @@ namespace SAM.Core.Excel
 
             if (values == null)
             {
-                worksheet.Cells.Clear();
+                worksheet.Cells.ClearContents();
                 return true;
             }
 
@@ -27,7 +27,7 @@ namespace SAM.Core.Excel
             switch (clearOption)
             {
                 case ClearOption.All:
-                    worksheet.UsedRange.Clear();
+                    worksheet.UsedRange.ClearContents();
                     break;
 
                 case ClearOption.Data:

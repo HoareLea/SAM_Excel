@@ -23,11 +23,11 @@ namespace SAM.Core.Excel
                 range_1 = worksheet.Cells[dataRowIndex, 1];
                 range_2 = worksheet.Cells[lastRowIndex, lastColumnIndex];
 
-                worksheet.Range(range_1, range_2).Clear();
+                worksheet.Range(range_1, range_2).ClearContents();
             }
             else if(clearOption == ClearOption.All)
             {
-                worksheet.UsedRange.Clear();
+                worksheet.UsedRange.ClearContents();
             }
 
             range_1 = worksheet.Cells[headerIndex, 1];
@@ -60,7 +60,7 @@ namespace SAM.Core.Excel
                         range_1 = worksheet.Cells[firstRowIndex, i];
                         range_2 = worksheet.Cells[lastRowIndex, i];
 
-                        worksheet.Range(range_1, range_2).Clear();
+                        worksheet.Range(range_1, range_2).ClearContents();
                     }
                 }
             }
