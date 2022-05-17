@@ -89,6 +89,9 @@ namespace SAM.Core.Excel
 
         public static List<bool> Write(string path, IEnumerable<string> worksheetNames, IEnumerable<object[,]> values, IEnumerable<int> rowIndexes = null, IEnumerable<int> columnIndexes = null, ClearOption clearOption = ClearOption.None)
         {
+            if (string.IsNullOrEmpty(path) || worksheetNames == null || values == null)
+                return null;
+
             List<bool> result = new List<bool>();
 
             int count = values.Count();
@@ -98,42 +101,73 @@ namespace SAM.Core.Excel
             if (worksheetNames.Count() == 0)
                 return result;
 
-            Dictionary<string, Func<Worksheet, bool>> funcs = new Dictionary<string, Func<Worksheet, bool>>();
+            Application application = null;
 
-            for(int i = 0; i < count; i++)
+            bool screenUpdating = false;
+            bool displayStatusBar = false;
+            bool enableEvents = false;
+
+            try
             {
+                application = new Application();
+                application.DisplayAlerts = false;
+                application.Visible = false;
+
+                screenUpdating = application.ScreenUpdating;
+                displayStatusBar = application.DisplayStatusBar;
+                enableEvents = application.EnableEvents;
+
+                application.ScreenUpdating = false;
+                application.DisplayStatusBar = false;
+                application.EnableEvents = false;
+
+                Workbook workbook = null;
+                if (System.IO.File.Exists(path))
+                    workbook = application.Workbooks.Open(path);
+                else
+                    workbook = application.Workbooks.Add();
+
                 string worksheetName = null;
-                if (i < worksheetNames.Count())
-                    worksheetName = worksheetNames.ElementAt(0);
-
-                int rowIndex = 1;
-                if (rowIndexes != null && i < rowIndexes.Count())
-                    rowIndex = rowIndexes.ElementAt(0);
-
-                int columnIndex = 1;
-                if (columnIndexes != null && i < columnIndexes.Count())
-                    columnIndex = columnIndexes.ElementAt(0);
-
-                Func<Worksheet, bool> func = new Func<Worksheet, bool>((Worksheet worksheet) =>
+                for (int i = 0; i < count; i++)
                 {
-                    if (worksheet == null)
-                    {
-                        return false;
-                    }
+                    if (i < worksheetNames.Count())
+                        worksheetName = worksheetNames.ElementAt(0);
 
-                    return Write(worksheet, values.ElementAt(i), rowIndex, columnIndex, clearOption);
-                });
+                    int rowIndex = 1;
+                    if (rowIndexes != null && i < rowIndexes.Count())
+                        rowIndex = rowIndexes.ElementAt(0);
 
-                funcs[worksheetName] = func;
+                    int columnIndex = 1;
+                    if (columnIndexes != null && i < columnIndexes.Count())
+                        columnIndex = columnIndexes.ElementAt(0);
+
+                    bool succeded = Write(workbook, worksheetName, values.ElementAt(i), rowIndex, columnIndex, clearOption);
+                    result.Add(succeded);
+                }
+
+                if (result != null && result.Contains(true))
+                    workbook.SaveAs(path);
+
+                workbook.Close(false);
             }
-            
-
-            if(funcs == null || funcs.Count == 0)
+            catch (Exception exception)
             {
-                return result;
+
+            }
+            finally
+            {
+                if (application != null)
+                {
+                    application.ScreenUpdating = screenUpdating;
+                    application.DisplayStatusBar = displayStatusBar;
+                    application.EnableEvents = enableEvents;
+
+                    application.Quit();
+                    application.Dispose();
+                }
             }
 
-            return Write(path, funcs);
+            return result;
         }
 
         public static bool Write(string path, string worksheetName, Func<Worksheet, bool> func)
