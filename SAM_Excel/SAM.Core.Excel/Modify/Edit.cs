@@ -5,6 +5,27 @@ namespace SAM.Core.Excel
 {
     public static partial class Modify
     {
+        public static bool Edit(string path, string worksheetName, Func<Worksheet, bool> func)
+        {
+            if (string.IsNullOrWhiteSpace(path) || func == null)
+            {
+                return false;
+            }
+
+            Func<Workbook, bool> func_Workbook = new Func<Workbook, bool>((Workbook workbook) =>
+            {
+                Worksheet worksheet = workbook.Worksheet(worksheetName);
+                if(worksheet == null)
+                {
+                    return false;
+                }
+
+                return func.Invoke(worksheet);
+            });
+
+            return Edit(path, func_Workbook);
+        }
+
         public static bool Edit(string path, Func<Workbook, bool> func)
         {
             if(string.IsNullOrWhiteSpace(path) || func == null)
