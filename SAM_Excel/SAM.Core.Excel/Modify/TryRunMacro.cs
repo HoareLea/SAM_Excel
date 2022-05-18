@@ -16,54 +16,21 @@ namespace SAM.Core.Excel
             if (!System.IO.File.Exists(path))
                 return false;
 
-            Application application = null;
-
-            bool screenUpdating = false;
-            bool displayStatusBar = false;
-            bool enableEvents = false;
-
             bool result = false;
-            try
+
+            Func<Workbook, bool> func = new Func<Workbook, bool>((Workbook workbook) =>
             {
-                application = new Application();
-                application.DisplayAlerts = false;
-                application.Visible = false;
-
-                screenUpdating = application.ScreenUpdating;
-                displayStatusBar = application.DisplayStatusBar;
-                enableEvents = application.EnableEvents;
-
-                application.ScreenUpdating = false;
-                application.DisplayStatusBar = false;
-                application.EnableEvents = false;
-
-                Workbook workbook = application.Workbooks.Open(path);
-                if (workbook != null)
+                if (workbook == null)
                 {
-                    result = TryRunMacro(application, out object value, macroName, arguments);
-
-                    if (save)
-                        workbook.Save();
-
-                    workbook.Close(false);
+                    return false;
                 }
-            }
-            catch (Exception exception)
-            {
-                result = false;
-            }
-            finally
-            {
-                if (application != null)
-                {
-                    application.ScreenUpdating = screenUpdating;
-                    application.DisplayStatusBar = displayStatusBar;
-                    application.EnableEvents = enableEvents;
 
-                    application.Quit();
-                    application.Dispose();
-                }
-            }
+                result = TryRunMacro(workbook.Application, out object value, macroName, arguments);
+
+                return result && save;
+            });
+
+            Edit(path, func);
 
             return result;
         }

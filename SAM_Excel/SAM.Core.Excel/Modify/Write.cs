@@ -89,175 +89,51 @@ namespace SAM.Core.Excel
 
         public static List<bool> Write(string path, IEnumerable<string> worksheetNames, IEnumerable<object[,]> values, IEnumerable<int> rowIndexes = null, IEnumerable<int> columnIndexes = null, ClearOption clearOption = ClearOption.None)
         {
-            if (string.IsNullOrEmpty(path) || worksheetNames == null || values == null)
+            if (string.IsNullOrEmpty(path) || worksheetNames == null || worksheetNames.Count() == 0 || values == null)
+            {
                 return null;
+            }
 
             List<bool> result = new List<bool>();
 
             int count = values.Count();
             if (count == 0)
-                return result;
-
-            if (worksheetNames.Count() == 0)
-                return result;
-
-            Application application = null;
-
-            bool screenUpdating = false;
-            bool displayStatusBar = false;
-            bool enableEvents = false;
-
-            try
             {
-                application = new Application();
-                application.DisplayAlerts = false;
-                application.Visible = false;
+                return result;
+            }
 
-                screenUpdating = application.ScreenUpdating;
-                displayStatusBar = application.DisplayStatusBar;
-                enableEvents = application.EnableEvents;
-
-                application.ScreenUpdating = false;
-                application.DisplayStatusBar = false;
-                application.EnableEvents = false;
-
-                Workbook workbook = null;
-                if (System.IO.File.Exists(path))
-                    workbook = application.Workbooks.Open(path);
-                else
-                    workbook = application.Workbooks.Add();
+            Func<Workbook, bool> func = new Func<Workbook, bool>((Workbook workbook) =>
+            {
+                if (workbook == null)
+                {
+                    return false;
+                }
 
                 string worksheetName = null;
+                int rowIndex = 1;
+                int columnIndex = 1;
                 for (int i = 0; i < count; i++)
                 {
                     if (i < worksheetNames.Count())
-                        worksheetName = worksheetNames.ElementAt(0);
+                        worksheetName = worksheetNames.ElementAt(i);
 
-                    int rowIndex = 1;
                     if (rowIndexes != null && i < rowIndexes.Count())
-                        rowIndex = rowIndexes.ElementAt(0);
+                        rowIndex = rowIndexes.ElementAt(i);
 
-                    int columnIndex = 1;
                     if (columnIndexes != null && i < columnIndexes.Count())
-                        columnIndex = columnIndexes.ElementAt(0);
+                        columnIndex = columnIndexes.ElementAt(i);
 
                     bool succeded = Write(workbook, worksheetName, values.ElementAt(i), rowIndex, columnIndex, clearOption);
                     result.Add(succeded);
                 }
 
-                if (result != null && result.Contains(true))
-                    workbook.SaveAs(path);
+                return true;
+            });
 
-                workbook.Close(false);
-            }
-            catch (Exception exception)
+            bool edited = Edit(path, func);
+            if(!edited)
             {
-
-            }
-            finally
-            {
-                if (application != null)
-                {
-                    application.ScreenUpdating = screenUpdating;
-                    application.DisplayStatusBar = displayStatusBar;
-                    application.EnableEvents = enableEvents;
-
-                    application.Quit();
-                    application.Dispose();
-                }
-            }
-
-            return result;
-        }
-
-        public static bool Write(string path, string worksheetName, Func<Worksheet, bool> func)
-        {
-            if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(worksheetName) || func == null)
-            {
-                return false;
-            }
-
-            Dictionary<string, Func<Worksheet, bool>> funcs = new Dictionary<string, Func<Worksheet, bool>>();
-            funcs[worksheetName] = func;
-
-            List<bool> results = Write(path, funcs);
-
-            return results != null && results.Count != 0 && results[0];
-        }
-
-        public static List<bool> Write(string path, Dictionary<string, Func<Worksheet, bool>> funcs)
-        {
-            if (string.IsNullOrEmpty(path) || funcs == null || funcs.Count == 0)
                 return null;
-
-            List<bool> result = new List<bool>();
-
-            Application application = null;
-
-            bool screenUpdating = false;
-            bool displayStatusBar = false;
-            bool enableEvents = false;
-
-            try
-            {
-                application = new Application();
-                application.DisplayAlerts = false;
-                application.Visible = false;
-
-                screenUpdating = application.ScreenUpdating;
-                displayStatusBar = application.DisplayStatusBar;
-                enableEvents = application.EnableEvents;
-
-                application.ScreenUpdating = false;
-                application.DisplayStatusBar = false;
-                application.EnableEvents = false;
-
-                Workbook workbook = null;
-                if (System.IO.File.Exists(path))
-                    workbook = application.Workbooks.Open(path);
-                else
-                    workbook = application.Workbooks.Add();
-
-                foreach(KeyValuePair<string, Func<Worksheet, bool>> keyValuePair in funcs)
-                {
-                    result.Add(false);
-
-                    if (string.IsNullOrEmpty(keyValuePair.Key) || keyValuePair.Value == null)
-                    {
-                        continue;
-                    }
-
-                    Worksheet worksheet = workbook.Worksheet(keyValuePair.Key);
-                    if (worksheet == null)
-                    {
-                        continue;
-                    }
-
-                    result[result.Count - 1] = keyValuePair.Value.Invoke(worksheet);
-                }
-
-                if(result.Contains(true))
-                {
-                    workbook.SaveAs(path);
-                }
-
-                workbook.Close(false);
-            }
-            catch (Exception exception)
-            {
-
-            }
-            finally
-            {
-                if (application != null)
-                {
-                    application.ScreenUpdating = screenUpdating;
-                    application.DisplayStatusBar = displayStatusBar;
-                    application.EnableEvents = enableEvents;
-
-                    application.Quit();
-                    application.Dispose();
-                }
             }
 
             return result;

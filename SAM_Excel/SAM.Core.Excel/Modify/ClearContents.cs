@@ -70,9 +70,15 @@ namespace SAM.Core.Excel
 
         public static bool ClearContents(this string path, string worksheetName, int rowStart, int columnStart, int rowEnd, int columnEnd)
         {
-            Func<Worksheet, bool> func = new Func<Worksheet, bool>((Worksheet worksheet) =>
+            Func<Workbook, bool> func = new Func<Workbook, bool>((Workbook workbook) =>
             {
-                if (worksheet == null)
+                if (workbook == null)
+                {
+                    return false;
+                }
+
+                Worksheet worksheet = workbook.Worksheet(worksheetName);
+                if(worksheet == null)
                 {
                     return false;
                 }
@@ -80,7 +86,7 @@ namespace SAM.Core.Excel
                 return ClearContents(worksheet, rowStart, columnStart, rowEnd, columnEnd);
             });
 
-            return Update(path, worksheetName, func);
+            return Edit(path, func);
         }
     }
 }

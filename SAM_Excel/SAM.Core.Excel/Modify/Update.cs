@@ -86,10 +86,15 @@ namespace SAM.Core.Excel
 
         public static bool Update(string path, string worksheetName, DelimitedFileTable delimitedFileTable, int headerIndex = 1, int headerCount = 0, ClearOption clearOption = ClearOption.None)
         {
-
-            Func<Worksheet, bool> func = new Func<Worksheet, bool>((Worksheet worksheet) =>
+            Func<Workbook, bool> func = new Func<Workbook, bool>((Workbook workbook) =>
             {
-                if (worksheet == null) 
+                if (workbook == null) 
+                {
+                    return false;
+                }
+
+                Worksheet worksheet = workbook.Worksheet(worksheetName);
+                if(worksheet == null)
                 {
                     return false;
                 }
@@ -97,75 +102,7 @@ namespace SAM.Core.Excel
                 return Update(worksheet, delimitedFileTable, headerIndex, headerCount, clearOption);
             });
 
-            return Update(path, worksheetName, func);
-        }
-    
-        public static bool Update(string path, string worksheetName, Func<Worksheet, bool> func)
-        {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(worksheetName) || func == null)
-                return false;
-
-            Application application = null;
-
-            bool screenUpdating = false;
-            bool displayStatusBar = false;
-            bool enableEvents = false;
-
-            bool result = false;
-
-            try
-            {
-                application = new Application();
-                application.DisplayAlerts = false;
-                application.Visible = false;
-
-                screenUpdating = application.ScreenUpdating;
-                displayStatusBar = application.DisplayStatusBar;
-                enableEvents = application.EnableEvents;
-
-                application.ScreenUpdating = false;
-                application.DisplayStatusBar = false;
-                application.EnableEvents = false;
-
-                Workbook workbook = null;
-                if (System.IO.File.Exists(path))
-                    workbook = application.Workbooks.Open(path);
-                else
-                    workbook = application.Workbooks.Add();
-
-                Worksheet worksheet = workbook.Worksheet(worksheetName);
-                if (worksheet == null)
-                {
-                    worksheet = workbook.Worksheets.Add() as Worksheet;
-                    if (worksheet != null)
-                        worksheet.Name = worksheetName;
-                }
-
-                result = func.Invoke(worksheet);
-
-                if (result)
-                    workbook.SaveAs(path);
-
-                workbook.Close(false);
-            }
-            catch (Exception exception)
-            {
-                result = false;
-            }
-            finally
-            {
-                if (application != null)
-                {
-                    application.ScreenUpdating = screenUpdating;
-                    application.DisplayStatusBar = displayStatusBar;
-                    application.EnableEvents = enableEvents;
-
-                    application.Quit();
-                    application.Dispose();
-                }
-            }
-
-            return result;
+            return Edit(path, func);
         }
     }
 }
