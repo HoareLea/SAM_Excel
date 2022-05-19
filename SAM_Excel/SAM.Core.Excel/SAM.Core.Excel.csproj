@@ -49,6 +49,7 @@
     <Compile Include="Create\DelimitedFileTables.cs" />
     <Compile Include="Create\DelimitedFileTable.cs" />
     <Compile Include="Enums\ClearOption.cs" />
+    <Compile Include="Modify\ReplaceText.cs" />
     <Compile Include="Modify\Copy.cs" />
     <Compile Include="Modify\TryRunMacro.cs" />
     <Compile Include="Modify\Update.cs" />
