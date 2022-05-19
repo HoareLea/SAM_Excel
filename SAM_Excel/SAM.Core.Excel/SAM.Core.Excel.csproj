@@ -49,6 +49,7 @@
     <Compile Include="Create\DelimitedFileTables.cs" />
     <Compile Include="Create\DelimitedFileTable.cs" />
     <Compile Include="Enums\ClearOption.cs" />
+    <Compile Include="Modify\Copy.cs" />
     <Compile Include="Modify\TryRunMacro.cs" />
     <Compile Include="Modify\Update.cs" />
     <Compile Include="Modify\ClearContents.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Modify\FinalRelease.cs" />
     <Compile Include="Query\ValidWorksheetName.cs" />
     <Compile Include="Query\Edited.cs" />
+    <Compile Include="Query\Workbook.cs" />
     <Compile Include="Query\WorksheetNames.cs" />
     <Compile Include="Query\Worksheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
