@@ -56,6 +56,7 @@
     <Compile Include="Modify\Write.cs" />
     <Compile Include="Modify\Release.cs" />
     <Compile Include="Modify\FinalRelease.cs" />
+    <Compile Include="Query\ValidWorksheetName.cs" />
     <Compile Include="Query\Edited.cs" />
     <Compile Include="Query\WorksheetNames.cs" />
     <Compile Include="Query\Worksheet.cs" />
