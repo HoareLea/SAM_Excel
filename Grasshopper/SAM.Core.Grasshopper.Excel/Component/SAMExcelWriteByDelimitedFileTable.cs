@@ -16,7 +16,7 @@ namespace SAM.Core.Grasshopper.Excel
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -31,7 +31,7 @@ namespace SAM.Core.Grasshopper.Excel
         public SAMExcelWriteByDelimitedFileTable()
           : base("SAMExcel.WriteByDelimitedFileTable", "SAMExcel.WriteByDelimitedFileTable",
               "Write Microsoft Excel File by DelimitedFileTable",
-              "SAM WIP", "Excel")
+              "SAM", "Excel")
         {
         }
 
