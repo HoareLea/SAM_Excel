@@ -1,15 +1,13 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.181
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Core.Excel", "SAM_Excel\SAM.Core.Excel\SAM.Core.Excel.csproj", "{0687E110-3E33-4E70-89BC-CA94DA1E5A07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.Core.Excel", "SAM_Excel\SAM.Core.Excel\SAM.Core.Excel.csproj", "{0687E110-3E33-4E70-89BC-CA94DA1E5A07}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SAM_Excel", "SAM_Excel", "{18D482B9-0FC8-43F0-950B-9F9B17ED06F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grasshopper", "Grasshopper", "{0F934D47-ECE6-40FA-9DC2-59533A73F472}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dynamo", "Dynamo", "{7B95C40F-6D0A-4DEC-80CB-260A89E0FC84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Core.Grasshopper.Excel", "Grasshopper\SAM.Core.Grasshopper.Excel\SAM.Core.Grasshopper.Excel.csproj", "{391AEF81-8831-4EC2-881A-C1DCC22389BC}"
 EndProject
