@@ -26,7 +26,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.6" />
+    <PackageReference Include="NetOfficeFw.Excel" Version="1.9.7" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
